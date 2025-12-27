@@ -1,4 +1,4 @@
-# Virtual Networking (https://learn.microsoft.com/pdf?url=https%3A%2F%2Flearn.microsoft.com%2Fen-us%2Fazure%2Fnetworking%2Ffundamentals%2Ftoc.json)
+# Virtual Networking 
 1. **VNets**  
 2. **Subnets**  
 3. **Peering**  
@@ -8,6 +8,7 @@
 7. **Public / Private Endpoints**  
 8. **Network Security Groups**  
 9. **Load Balancers (Basics)**  
+10. **Refer : https://learn.microsoft.com/pdf?url=https%3A%2F%2Flearn.microsoft.com%2Fen-us%2Fazure%2Fnetworking%2Ffundamentals%2Ftoc.json**
 
 ## VNets (Virtual Networks)
 
