@@ -102,7 +102,7 @@ VM Subnet Egress (and/or AppGW Outbound) → User Defined Route → Azure Firewa
 - DNAT: If Firewall in front, create DNAT rule on Firewall to forward public port(s) to AppGW private IP/port.
 - Certificates/SSL: Terminate at AppGW (WAF) or pass-through to ILB/VMs depending on your TLS model.
 
-# Create VNet and Subnets
+### Create VNet and Subnets
 ```bash
 az network vnet create -g RG -n VNet --address-prefix 10.0.0.0/16 \
    --subnet-name AzureFirewallSubnet --subnet-prefix 10.0.1.0/24
@@ -111,23 +111,23 @@ az network vnet subnet create -g RG --vnet-name VNet -n ILBSubnet --address-pref
 az network vnet subnet create -g RG --vnet-name VNet -n VMSubnet --address-prefix 10.0.4.0/24
 ```
 
-# Deploy Firewall (Requires Public IP)
+### Deploy Firewall (Requires Public IP)
 ```bash
 az network public-ip create -g RG -n fw-pip --sku Standard
 az network firewall create -g RG -n MyFirewall --sku AZFW_VNet
 # Configure firewall IPs and NAT rules via portal/az based on DNAT needs
 ```
 
-# Deploy Application Gateway (Internal or Public)
-# (App GW v2 recommended; long command omitted — use portal or ARM template)
+### Deploy Application Gateway (Internal or Public)
+### (App GW v2 recommended; long command omitted — use portal or ARM template)
 
-# Create Internal Load Balancer -> Backend Pool of VMs/VMSS
+### Create Internal Load Balancer -> Backend Pool of VMs/VMSS
 ```bash
 az network lb create -g RG -n ilb --sku Standard --vnet-name VNet --subnet ILBSubnet --frontend-ip-name ilb-fe --private-ip-address 10.0.3.10
 # Add backend pool and probe, then add VMs to backend pool
 ```
 
-# Add UDR on VMSubnet to Route Egress via Firewall
+### Add UDR on VMSubnet to Route Egress via Firewall
 ```bash
 az network route-table create -g RG -n rtbl
 az network route-table route create -g RG --route-table-name rtbl -n default-route --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address 10.0.1.4
@@ -142,7 +142,7 @@ az network vnet subnet update -g RG --vnet-name VNet --name VMSubnet --route-tab
 - Use probes and matching backend HTTP settings to avoid unhealthy backends.
 - Test step-by-step: DNAT to AppGW → AppGW → ILB → single VM before scaling.
 
-## Topology Diagrams (ASCII)
+### Topology Diagrams (ASCII)
 
 **Option A — Firewall in Front of Internal App Gateway → ILB → VMs**
 ```
