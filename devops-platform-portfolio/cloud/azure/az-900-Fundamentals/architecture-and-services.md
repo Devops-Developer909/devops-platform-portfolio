@@ -205,15 +205,7 @@ VM Backend Servers
 - PIP = Public IP
 - DNAT = Destination NAT (Firewall NAT rule)
 - UDR = User Defined Route (route table forcing egress to firewall)
-## Subnet Naming Convention
-
-| Subnet Name | Purpose | CIDR Example |
-| --- | --- | --- |
-| **AzureFirewallSubnet** | Azure Firewall deployment (required name) | 10.0.1.0/24 |
-| **AppGwSubnet** | Application Gateway (must be separate subnet) | 10.0.2.0/24 |
-| **ILBSubnet** | Internal Load Balancer frontend | 10.0.3.0/24 |
-| **VMSubnet** | Backend VM instances | 10.0.4.0/24 |
-
+- Subnet Names: AzureFirewallSubnet, AppGwSubnet, ILBSubnet, VMSubnet
 
 
 🔥 Side-by-Side Comparison
