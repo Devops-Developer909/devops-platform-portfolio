@@ -209,32 +209,44 @@ VM Backend Servers
 
 
 🔥 Side-by-Side Comparison
-Feature	NSG	Load Balancer	Application Gateway	Azure Firewall
-OSI Layer	L3–L4	L4	L7	L3–L7
-Traffic filtering	✅	❌	❌	✅
-Load balancing	❌	✅	✅	❌
-URL routing	❌	❌	✅	❌
-SSL termination	❌	❌	✅	❌
-WAF	❌	❌	✅	❌
-Central security	❌	❌	❌	✅
-Cost	Free	Low	Medium	High
+
+| Feature | NSG | Load Balancer | Application Gateway | Azure Firewall |
+|---------|-----|---------------|-------------------|-----------------|
+| OSI Layer | L3–L4 | L4 | L7 | L3–L7 |
+| Traffic filtering | ✅ | ❌ | ❌ | ✅ |
+| Load balancing | ❌ | ✅ | ✅ | ❌ |
+| URL routing | ❌ | ❌ | ✅ | ❌ |
+| SSL termination | ❌ | ❌ | ✅ | ❌ |
+| WAF | ❌ | ❌ | ✅ | ❌ |
+| Central security | ❌ | ❌ | ❌ | ✅ |
+| Cost | Free | Low | Medium | High |
 
 🏗️ Real-World Architecture Example
 Typical secure web app setup:
 
-java
-Copy code
-Internet
+```
+Internet (Public)
    ↓
-Application Gateway (WAF)
+Application Gateway (WAF) [AppGwSubnet]
    ↓
-Azure Load Balancer
+Azure Load Balancer (Internal) [ILBSubnet]
    ↓
-Web VMs (NSG applied)
+Web VMs (NSG applied) [VMSubnet]
    ↓
-Azure Firewall (outbound control)
+Azure Firewall (outbound control) [AzureFirewallSubnet]
+   ↓
+Internet (Outbound)
+```
+
+**Flow Explanation:**
+1. **Public traffic** enters via Application Gateway (WAF layer)
+2. **AppGW routes** to Internal Load Balancer (L4 distribution)
+3. **ILB distributes** to backend VM pool (NSGs restrict access)
+4. **VM outbound traffic** forced through Azure Firewall (UDR: 0.0.0.0/0 → Firewall Private IP)
+5. **Firewall inspects** and logs all outbound connections before internet egress
 
 🧠 Simple Rule to Remember
+
 NSG → Who can talk to whom
 
 Load Balancer → Spread traffic
