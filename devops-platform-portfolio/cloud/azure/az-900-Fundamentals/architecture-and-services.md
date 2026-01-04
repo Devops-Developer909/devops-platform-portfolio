@@ -205,4 +205,48 @@ VM Backend Servers
 - PIP = Public IP
 - DNAT = Destination NAT (Firewall NAT rule)
 - UDR = User Defined Route (route table forcing egress to firewall)
-- Subnet Names: AzureFirewallSubnet, AppGwSubnet, ILBSubnet, VMSubnet
+## Subnet Naming Convention
+
+| Subnet Name | Purpose | CIDR Example |
+| --- | --- | --- |
+| **AzureFirewallSubnet** | Azure Firewall deployment (required name) | 10.0.1.0/24 |
+| **AppGwSubnet** | Application Gateway (must be separate subnet) | 10.0.2.0/24 |
+| **ILBSubnet** | Internal Load Balancer frontend | 10.0.3.0/24 |
+| **VMSubnet** | Backend VM instances | 10.0.4.0/24 |
+
+
+
+🔥 Side-by-Side Comparison
+Feature	NSG	Load Balancer	Application Gateway	Azure Firewall
+OSI Layer	L3–L4	L4	L7	L3–L7
+Traffic filtering	✅	❌	❌	✅
+Load balancing	❌	✅	✅	❌
+URL routing	❌	❌	✅	❌
+SSL termination	❌	❌	✅	❌
+WAF	❌	❌	✅	❌
+Central security	❌	❌	❌	✅
+Cost	Free	Low	Medium	High
+
+🏗️ Real-World Architecture Example
+Typical secure web app setup:
+
+java
+Copy code
+Internet
+   ↓
+Application Gateway (WAF)
+   ↓
+Azure Load Balancer
+   ↓
+Web VMs (NSG applied)
+   ↓
+Azure Firewall (outbound control)
+
+🧠 Simple Rule to Remember
+NSG → Who can talk to whom
+
+Load Balancer → Spread traffic
+
+Application Gateway → Smart web traffic + security
+
+Azure Firewall → Central enterprise security
