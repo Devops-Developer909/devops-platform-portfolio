@@ -17,21 +17,21 @@
    3. Azure Front Door
   ## Hybrid Connectivity 
    ### Azure hybrid connectivity services secure communication to and from your resources in Azure
-   1 . VPN Gateway
+   1. VPN Gateway
    2. Express Route
    3. Virtual WAN
    4. Peering Services 
   ## Network security 
    ### Network security services protect your web applications and IaaS services from DDoS attacks and Malicious actors
-    1. Firewal Manager
-    2. Firewal,
-    3. Web Application firewall
-    4. DDoS Protection 
+   1. Firewal Manager
+   2. Firewal,
+   3. Web Application firewall
+   4. DDoS Protection 
   ## Networking management and monitoring 
    ### Networing management and moniotoring services provides tools to manage and monitor your network resources 
-    1. Netwrok watcher
-    2. Azure Monitor 
-    3. Azure network manager 
+   1. Netwrok watcher
+   2. Azure Monitor 
+   3. Azure network manager 
 
 # Virtual Networking 
 1. **VNets**  
