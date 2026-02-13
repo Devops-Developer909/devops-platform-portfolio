@@ -74,337 +74,278 @@ Azure.
 
 ***Azure ExpressRoute**:
  Established between your network and Azure, through an ExpressRoute partner. This connection is private. Traffic doesn't go over the internet. To learn more, see What is Azure ExpressRoute?.
+# Azure Networking
 
-##### Filter network traffic
- You can filter network traffic between subnets by using either or both of the following options:
+## Overview
+Azure networking provides the foundation for connecting Azure resources to each other, to the internet, and to on-premises networks. This document summarizes core services, design patterns, and practical commands for common networking tasks.
 
-**Network security groups**: 
- Network security groups and application security groups can contain multiple inbound and outbound security rules. These rules enable you to filter traffic to and from resources by source and destination IP address, port, and protocol. To learn more, see Network security groups and Application security groups.
+---
 
-**Network virtual appliances**:
-  A network virtual appliance is a virtual machine that performs a network function, such as a firewall or WAN optimization. To view a list of available network virtual appliances that you can deploy in a virtual network, go to Azure Marketplace.
+## Networking foundation
+Core Azure networking services:
 
-##### Route network traffic
- Azure routes traffic between subnets, connected virtual networks, on-premises networks, and the internet, by default. You can implement either or both of the following options to override the default routes that Azure creates:
+- Virtual Networks (VNet)
+- Azure Private Link
+- Azure DNS
+- Azure Bastion
+- Azure Route Server
+- NAT Gateway
+- Traffic Manager
 
-**Route tables**:
- You can create custom route tables that control where traffic is routed to for each subnet.
+---
 
-**Border gateway protocol (BGP) routes**:
- If you connect your virtual network to your on-premises network by using an Azure VPN gateway or an ExpressRoute connection, you can propagate your on-premises BGP routes to your virtual networks.
+## Virtual Networks (VNets)
 
-##### Integrate with Azure services
- 1. Integrating Azure services with an Azure virtual network enables private access to the service from virtual machines or compute resources in the virtual network. You can use the following options for this integration:
- 2. Deploy dedicated instances of the service into a virtual network. The services can then be privately accessed within the virtual network and from on-premises networks.
- 3. Use Azure Private Link to privately access a specific instance of the service from your virtual network and from on-premises networks.
- 4. Access the service over public endpoints by extending a virtual network to the service, through service endpoints. Service endpoints allow service resources to be secured to the virtual network.
+Azure Virtual Network (VNet) is the fundamental building block for your private network in Azure.
 
-##### Limits
- There are limits to the number of Azure resources that you can deploy. Most Azure networking limits are at the maximum values. However, you can increase certain networking limits. For more information, see Networking limits.
+### VNet use cases
 
-##### Virtual networks and availability zones
- Virtual networks and subnets span all availability zones in a region. You don't need to divide them by availability zones to accommodate zonal resources. For example, if you configure a zonal VM, you don't have to take into consideration the virtual network when selecting the availability zone for the VM. The same is true for other zonal resources
+- Host and isolate Azure resources (VMs, AKS, App Service Environments, VM Scale Sets).
+- Connect resources across VNets using peering or Azure Virtual Network Manager.
+- Connect to the internet (outbound by default) and expose resources with public IPs or Load Balancers.
+- Connect to on-premises networks via VPN Gateway or ExpressRoute.
+- Encrypt traffic between resources using virtual network encryption.
+- Filter traffic with Network Security Groups (NSGs) and Application Security Groups (ASGs).
+- Provide private connectivity to Azure services with service endpoints and Private Link.
 
-#### Next Day :
- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview#next-steps
+### Communicate with the internet
 
+- Outbound connectivity is allowed by default for resources in a VNet.
+- Use Public IPs, NAT Gateway, or a public Load Balancer to manage outbound connectivity.
+- For inbound connectivity, assign a Public IP or use a public Load Balancer.
 
-#### Network security groups
-#### Serice endpoints 
-#### Azure private link
-#### Azure DNS
-#### Azure Bastion
-#### Azure route server
-#### NAT Gateway 
-#### Trafic Manager 
+Note: When using only an internal standard Load Balancer, outbound connectivity isn't available until you configure instance-level public IPs or a public Load Balancer.
 
-  ## Load Balancing && Content Delivery
-   ###  Services allow for management, distribution, and optimization of your applications and workloads
-   1. Load Balancer 
-   2. Application Gateway
-   3. Azure Front Door
-  ## Hybrid Connectivity 
-   ### Azure hybrid connectivity services secure communication to and from your resources in Azure
-   1. VPN Gateway
-   2. Express Route
-   3. Virtual WAN
-   4. Peering Services 
-  ## Network security 
-   ### Network security services protect your web applications and IaaS services from DDoS attacks and Malicious actors
-   1. Firewal Manager
-   2. Firewal,
-   3. Web Application firewall
-   4. DDoS Protection 
-  ## Networking management and monitoring 
-   ### Networing management and moniotoring services provides tools to manage and monitor your network resources 
-   1. Netwrok watcher
-   2. Azure Monitor 
-   3. Azure network manager 
+### Communicate between Azure resources
 
-# Virtual Networking 
-1. **VNets**  
-2. **Subnets**  
-3. **Peering**  
-4. **DNS**  
-5. **VPN Gateway**  
-6. **ExpressRoute**  
-7. **Public / Private Endpoints**  
-8. **Network Security Groups**  
-9. **Load Balancers (Basics)**  
-10. **Refer : https://learn.microsoft.com/pdf?url=https%3A%2F%2Flearn.microsoft.com%2Fen-us%2Fazure%2Fnetworking%2Ffundamentals%2Ftoc.json**
+- Deploy resources into the same VNet and subnets to enable private communication.
+- Use VNet peering to connect VNets across regions or subscriptions.
+- Use service endpoints or Private Link to secure Azure service access to only your VNets.
 
-## VNets (Virtual Networks)
+### Communicate with on-premises resources
 
-## Azure Firewall 
+Options:
 
-Azure Firewall is a managed, cloud-native network security service that controls and inspects traffic going in and out of your Azure virtual network (VNet). It acts as a central security gate that determines which traffic is allowed, on which ports, and to which destinations.
+- Point-to-site VPN — single computer to VNet (useful for dev/test and individual access).
+- Site-to-site VPN — IPSec tunnel between on-prem VPN device and Azure VPN Gateway.
+- ExpressRoute — private connection through a partner; traffic does not traverse the internet.
 
-### Azure Firewall — Core Components
+### Filter and route network traffic
 
-| Component               | Purpose                                   |
-| ----------------------- | ----------------------------------------- |
-| **Firewall Rules**      | Allow or deny traffic                     |
-| **Application Rules**   | Control HTTP/HTTPS traffic (FQDN-based)   |
-| **Network Rules**       | Control IP/Port-based traffic             |
-| **NAT Rules**           | Publish internal services to the internet |
-| **Threat Intelligence** | Blocks known malicious IPs                |
+- Network Security Groups (NSGs) and Application Security Groups (ASGs) for layer 3/4 access control.
+- Network virtual appliances (NVAs) for firewalling, WAN optimization, etc.
+- Route tables (UDRs) to override Azure's default routing per subnet.
+- BGP route propagation when using VPN Gateway or ExpressRoute.
 
-### Typical Flow
+### Integrate Azure services
+
+- Deploy dedicated instances into your VNet for private access.
+- Use Azure Private Link for private, per-resource connectivity.
+- Use service endpoints to secure service resources to your VNets while keeping traffic on the Azure backbone.
+
+### Limits and availability
+
+- VNets and subnets span availability zones; you don't need to create per-zone VNets for zonal resources.
+- Some resource limits exist — consult Azure networking limits when designing at scale.
+
+---
+
+## Key networking topics (quick reference)
+
+- VNets & Subnets
+- Peering
+- DNS
+- VPN Gateway
+- ExpressRoute
+- Public / Private Endpoints
+- Network Security Groups (NSGs)
+- Load Balancers
+
+---
+
+## Load balancing & content delivery
+
+Services for traffic distribution and optimization:
+
+- Load Balancer (L4)
+- Application Gateway (L7, WAF)
+- Azure Front Door (global, edge)
+
+---
+
+## Hybrid connectivity
+
+Hybrid connectivity services:
+
+- VPN Gateway
+- ExpressRoute
+- Virtual WAN
+- Peering services
+
+---
+
+## Network security
+
+Protect web applications and IaaS:
+
+- Azure Firewall / Firewall Manager
+- Network Security Groups (NSGs)
+- Web Application Firewall (WAF) via Application Gateway or Front Door
+- DDoS Protection
+
+---
+
+## Networking management & monitoring
+
+Tools to manage and monitor networks:
+
+- Network Watcher
+- Azure Monitor
+- Azure Network Manager
+
+---
+
+## Azure Firewall (detailed)
+
+Azure Firewall is a managed, cloud-native network security service that inspects and controls traffic to and from your VNets.
+
+### Core components
+
+| Component | Purpose |
+|---|---|
+| Firewall rules | Allow or deny traffic |
+| Application rules | Control HTTP/HTTPS traffic (FQDN-based) |
+| Network rules | Control IP/port-based traffic |
+| NAT rules | Publish internal services to the internet (DNAT) |
+| Threat Intelligence | Block known malicious IPs |
+
+### Typical flow
+
 Your PC → Firewall Public IP → DNAT → VM Private IP → SSH
 
-### Route Table (UDR)
-To ensure traffic is inspected by Azure Firewall, create a User Defined Route (UDR) on the VM subnet that directs outbound traffic to the firewall's private IP.
+### User-defined routes (UDR)
 
-- **Route Example:**
-   - Destination: 0.0.0.0/0
-   - Next Hop Type: Virtual Appliance
-   - Next Hop Address: `<Firewall Private IP>`
+To ensure traffic is inspected by the firewall, create a UDR on the VM subnet that points 0.0.0.0/0 to the firewall private IP (Next hop type: Virtual Appliance).
 
-This forces:
-VM → Azure Firewall → Internet
+Route example:
 
-### Why UDR is Required for Azure Firewall
+- Destination: 0.0.0.0/0
+- Next hop type: Virtual Appliance
+- Next hop address: <Firewall Private IP>
 
-1. **Security Enforcement**  
-    - Firewall rules apply only if traffic passes through the firewall.  
-    - Without a UDR, VMs can reach the internet directly and firewall rules are ignored.
+This forces egress: VM → Azure Firewall → Internet
 
-2. **Centralized Control**  
-    - One firewall can protect multiple subnets.  
-    - Central place to manage outbound rules and logs.
+### Why UDRs are required
 
-3. **Compliance & Auditing**  
-    - Logs for outbound traffic are consolidated.  
-    - Useful for regulated environments (PCI, ISO).
+1. Security enforcement — rules apply only if traffic flows through the firewall.
+2. Centralized control — one firewall can protect multiple subnets.
+3. Compliance & auditing — consolidated logs for outbound traffic.
+4. Prevent firewall bypass — UDRs reduce the ability to bypass inspection.
 
-4. **Prevent Firewall Bypass**  
-    - Without UDRs, a user could assign a Public IP to a VM and bypass the firewall.
+### Recommended topologies
 
-### Example Architecture (ASCII)
+Option A — Firewall in front (perimeter control):
 
-```
-VM Subnet
-   |
-   | (UDR: 0.0.0.0/0 → Firewall private IP)
-   ↓
-Azure Firewall
-   |
-Internet
-```
+Internet → Azure Firewall (PIP) → DNAT → Application Gateway (internal) → Internal Load Balancer → VMs
 
-**Firewall Configuration:**
-- Firewall Policy → Firewall Rules / NAT Rules  
-- DNAT Example: Any IP (*) → Firewall Public IP → VM Private IP
+Option B — App Gateway (WAF) front, Firewall for egress/inspection:
 
-**Recommended High-Level Topologies (Choose One)**
+Internet → Application Gateway (Public WAF) → ILB/VMs
+VM egress → UDR → Azure Firewall → Internet
 
-**Option A — Firewall in Front (Perimeter Control)**
-```
-Internet → Azure Firewall (Public) → DNAT → Application Gateway (Internal) → Internal Load Balancer → VM Backend Pool
-```
+Design rules:
 
-**Option B — App Gateway in Front (WAF First) + Firewall for Egress/Central Inspection**
-```
-Internet → Application Gateway (Public WAF) → Internal Load Balancer → VMs
-VM Subnet Egress (and/or AppGW Outbound) → User Defined Route → Azure Firewall (for Logging/Inspection) → Internet
-```
+- Put each managed service in its own subnet (AzureFirewallSubnet, AppGwSubnet, ILBSubnet, VMSubnet).
+- App Gateway requires its own subnet; Azure Firewall requires subnet named AzureFirewallSubnet.
+- Use UDRs on VMSubnet (and AppGwSubnet if needed) to route egress via the firewall.
+- Use NSGs to restrict direct access to VMSubnet; allow only ALB/AppGW or specific ports.
 
-**Key Design Rules**
+### Example commands
 
-- Put each managed service in its own subnet:
-   - AzureFirewallSubnet (exact name required)
-   - AppGwSubnet
-   - ILBSubnet (or Backend Subnet)
-   - VMSubnet
-- App Gateway must be in its own subnet. Internal AppGW has private IP (used with Firewall DNAT).
-- Azure Firewall must be in subnet named AzureFirewallSubnet.
-- Internal Load Balancer (ILB) has a private frontend IP and backend pool of VMs (or VMSS).
-- Use UDRs to force egress through Azure Firewall: on VMSubnet (and AppGwSubnet if you require inspection of AppGW outbound), route 0.0.0.0/0 → Virtual Appliance → `<AzureFirewallPrivateIP>`.
-- Use NSGs to restrict direct access to VMs; allow only ALB/AppGW or specific ports.
-- Health Probes: Configure ILB probe and AppGW backend HTTP settings to match app health endpoint.
-- DNAT: If Firewall in front, create DNAT rule on Firewall to forward public port(s) to AppGW private IP/port.
-- Certificates/SSL: Terminate at AppGW (WAF) or pass-through to ILB/VMs depending on your TLS model.
+Create VNet and subnets:
 
-### Create VNet and Subnets
 ```bash
 az network vnet create -g RG -n VNet --address-prefix 10.0.0.0/16 \
-   --subnet-name AzureFirewallSubnet --subnet-prefix 10.0.1.0/24
+  --subnet-name AzureFirewallSubnet --subnet-prefix 10.0.1.0/24
 az network vnet subnet create -g RG --vnet-name VNet -n AppGwSubnet --address-prefix 10.0.2.0/24
 az network vnet subnet create -g RG --vnet-name VNet -n ILBSubnet --address-prefix 10.0.3.0/24
 az network vnet subnet create -g RG --vnet-name VNet -n VMSubnet --address-prefix 10.0.4.0/24
 ```
 
-### Deploy Firewall (Requires Public IP)
+Deploy Firewall (requires public IP):
+
 ```bash
 az network public-ip create -g RG -n fw-pip --sku Standard
 az network firewall create -g RG -n MyFirewall --sku AZFW_VNet
 # Configure firewall IPs and NAT rules via portal/az based on DNAT needs
 ```
 
-### Deploy Application Gateway (Internal or Public)
-### (App GW v2 recommended; long command omitted — use portal or ARM template)
+Create internal Load Balancer (ILB):
 
-### Create Internal Load Balancer -> Backend Pool of VMs/VMSS
 ```bash
-az network lb create -g RG -n ilb --sku Standard --vnet-name VNet --subnet ILBSubnet --frontend-ip-name ilb-fe --private-ip-address 10.0.3.10
-# Add backend pool and probe, then add VMs to backend pool
+az network lb create -g RG -n ilb --sku Standard --vnet-name VNet --subnet ILBSubnet \
+  --frontend-ip-name ilb-fe --private-ip-address 10.0.3.10
+# Add backend pool, probe, and VMs to backend
 ```
 
-### Add UDR on VMSubnet to Route Egress via Firewall
+Add UDR to route egress via the firewall:
+
 ```bash
 az network route-table create -g RG -n rtbl
-az network route-table route create -g RG --route-table-name rtbl -n default-route --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address 10.0.1.4
+az network route-table route create -g RG --route-table-name rtbl -n default-route \
+  --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address 10.0.1.4
 az network vnet subnet update -g RG --vnet-name VNet --name VMSubnet --route-table rtbl
 ```
 
-**Practical Tips / Gotchas**
+### Practical tips
 
-- App Gateway requires its own subnet and care with UDRs — avoid UDR that breaks platform management traffic.
-- If Firewall is in front, use internal AppGW and DNS so Firewall DNAT maps correctly.
-- For client IP preservation, AppGW injects X-Forwarded-For; backend VMs behind ILB may see AppGW/ILB SNAT — design accordingly.
-- Use probes and matching backend HTTP settings to avoid unhealthy backends.
-- Test step-by-step: DNAT to AppGW → AppGW → ILB → single VM before scaling.
+- Avoid UDRs that break platform management traffic for App Gateway.
+- Test step-by-step (DNAT → AppGW → ILB → single VM) before scaling.
+- Use health probes and matching backend HTTP settings to keep backends healthy.
 
-### Topology Diagrams (ASCII)
+---
 
-**Option A — Firewall in Front of Internal App Gateway → ILB → VMs**
+## Topology ASCII diagrams
+
+Option A — Firewall in front of internal App Gateway → ILB → VMs:
+
 ```
-Internet (Public) 
-   |
-   | (Public IP, DNAT on Azure Firewall)
-   v
+Internet (Public)
+  |
+  | (PIP, DNAT on Azure Firewall)
+  v
 Azure Firewall (AzureFirewallSubnet) [PIP]
-   |
-   | (DNAT -> AppGw private IP, or route to AppGW subnet)
-   v
-Application Gateway (AppGwSubnet) [Private IP - Internal AppGW]
-   |
-   | (AppGW backend = ILB frontend)
-   v
-Internal Load Balancer (ILBSubnet) [Private Frontend IP]
-   |
-   | (Backend pool, health probes)
-   v
+  |
+  v
+Application Gateway (AppGwSubnet) [private]
+  |
+  v
+Internal Load Balancer (ILBSubnet)
+  |
+  v
 VM Backend Servers (VMSubnet)
 ```
 
-**UDR (Applied to VMSubnet):**
-```
-0.0.0.0/0 --> VirtualAppliance --> <AzureFirewallPrivateIP>
-```
-(Optional) UDR on AppGwSubnet if AppGW egress must be inspected.
+UDR example:
 
-**Notes:**
-- Firewall: DNAT rule maps PIP:443 -> AppGwPrivateIP:443.
-- AppGW must be in its own subnet (AppGwSubnet).
-- ILB provides private frontend and backend pool of VMs/VMSS; probes must match app endpoints.
-- NSGs restrict direct access to VMSubnet; allow only ILB/AppGW as source.
-
-**Option B — Public App Gateway (WAF) in Front, Firewall Used for Egress Inspection**
-```
-Internet (Public)
-   |
-   v
-Application Gateway (AppGwSubnet) [Public WAF]
-   |
-   v
-Internal Load Balancer (ILBSubnet) or AppGW -> Backend VMs (VMSubnet)
-   |
-   v
-VM Backend Servers
-```
-
-**UDR (Applied to VMSubnet and/or AppGwSubnet):**
 ```
 0.0.0.0/0 --> VirtualAppliance --> <AzureFirewallPrivateIP>
 ```
 
-**Notes:**
-- Use AppGW public WAF to terminate TLS and protect apps.
-- Use Azure Firewall for centralized outbound inspection/logging (via UDR).
-- Choose TLS termination point: AppGW (recommended for WAF) or pass-through to VMs.
+---
 
-**Legend:**
-- PIP = Public IP
-- DNAT = Destination NAT (Firewall NAT rule)
-- UDR = User Defined Route (route table forcing egress to firewall)
-- Subnet Names: AzureFirewallSubnet, AppGwSubnet, ILBSubnet, VMSubnet
+## Azure DDoS Protection
 
+DDoS protection defends applications from volumetric and protocol attacks that aim to exhaust resources or bandwidth and make services unavailable.
 
-🔥 Side-by-Side Comparison
+Common attack outcomes:
 
-| Feature | NSG | Load Balancer | Application Gateway | Azure Firewall |
-|---------|-----|---------------|-------------------|-----------------|
-| OSI Layer | L3–L4 | L4 | L7 | L3–L7 |
-| Traffic filtering | ✅ | ❌ | ❌ | ✅ |
-| Load balancing | ❌ | ✅ | ✅ | ❌ |
-| URL routing | ❌ | ❌ | ✅ | ❌ |
-| SSL termination | ❌ | ❌ | ✅ | ❌ |
-| WAF | ❌ | ❌ | ✅ | ❌ |
-| Central security | ❌ | ❌ | ❌ | ✅ |
-| Cost | Free | Low | Medium | High |
+- Service unavailability
+- Exhausted bandwidth
+- Application instability
 
-🏗️ Real-World Architecture Example
-Typical secure web app setup:
+---
 
-```
-Internet (Public)
-   ↓
-Application Gateway (WAF) [AppGwSubnet]
-   ↓
-Azure Load Balancer (Internal) [ILBSubnet]
-   ↓
-Web VMs (NSG applied) [VMSubnet]
-   ↓
-Azure Firewall (outbound control) [AzureFirewallSubnet]
-   ↓
-Internet (Outbound)
-```
+## References
 
-**Flow Explanation:**
-1. **Public traffic** enters via Application Gateway (WAF layer)
-2. **AppGW routes** to Internal Load Balancer (L4 distribution)
-3. **ILB distributes** to backend VM pool (NSGs restrict access)
-4. **VM outbound traffic** forced through Azure Firewall (UDR: 0.0.0.0/0 → Firewall Private IP)
-5. **Firewall inspects** and logs all outbound connections before internet egress
-
-🧠 Simple Rule to Remember
-
-NSG → Who can talk to whom
-
-Load Balancer → Spread traffic
-
-Application Gateway → Smart web traffic + security
-
-Azure Firewall → Central enterprise security
-
-## Azure DDoS Protection (Distribted Deniel of Service)
-
-What is a DDoS Attack? (Quick context)
-A DDoS attack floods your application with huge volumes of traffic from many sources to:
-
-Crash your app
-
-Exhaust bandwidth
-
-Make services unavailable
+- Azure networking fundamentals: https://learn.microsoft.com/azure/virtual-network
