@@ -1,3 +1,38 @@
+# Azure Networking
+
+  ## Networking foundation :
+   ### Azure networking foundation services are :
+
+   1. Virtual Networks (VNet)
+   2. Private Link 
+   3. Azure DNS 
+   4. Azure Bastion
+   5. Route Server
+   6. NAT Gateway
+   7. Trafic Manager
+  ## Load Balancing && Content Delivery
+   ###  Services allow for management, distribution, and optimization of your applications and workloads
+   1. Load Balancer 
+   2. Application Gateway
+   3. Azure Front Door
+  ## Hybrid Connectivity 
+    ### Azure hybrid connectivity services secure communication to and from your resources in Azure
+   1 . VPN Gateway
+   2. Express Route
+   3. Virtual WAN
+   4. Peering Services 
+  ## Network security 
+    ### Network security services protect your web applications and IaaS services from DDoS attacks and Malicious actors
+    1. Firewal Manager
+    2. Firewal,
+    3. Web Application firewall
+    4. DDoS Protection 
+  ## Networking management and monitoring 
+    ### Networing management and moniotoring services provides tools to manage and monitor your network resources 
+    1. Netwrok watcher
+    2. Azure Monitor 
+    3. Azure network manager 
+
 # Virtual Networking 
 1. **VNets**  
 2. **Subnets**  
@@ -254,3 +289,14 @@ Load Balancer → Spread traffic
 Application Gateway → Smart web traffic + security
 
 Azure Firewall → Central enterprise security
+
+## Azure DDoS Protection (Distribted Deniel of Service)
+
+What is a DDoS Attack? (Quick context)
+A DDoS attack floods your application with huge volumes of traffic from many sources to:
+
+Crash your app
+
+Exhaust bandwidth
+
+Make services unavailable
