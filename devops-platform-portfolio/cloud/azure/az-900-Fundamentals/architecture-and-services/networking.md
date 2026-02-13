@@ -10,6 +10,35 @@
    5. Route Server
    6. NAT Gateway
    7. Trafic Manager
+
+### Virtual network
+Azure Virtual Network (VNet) is the fundamental building block for your private network in
+Azure.
+#### You can use VNets to:
+1. Communicate between Azure resources: You can deploy virtual machines, and several other types of Azure resources to a virtual network, such as Azure App Service Environments, the Azure Kubernetes Service (AKS), and Azure Virtual Machine Scale Sets.
+1. Communicate between each other: You can connect virtual networks to each other,enabling resources in either virtual network to communicate with each other, using virtual network peering or Azure Virtual Network Manager. 
+3. The virtual networks you connect can be in the same, or different, Azure regions. For more information, see Virtual network peering and Azure Virtual Network Manager.
+4. Communicate to the internet: All resources in a virtual network can communicate outbound to the internet, by default. You can communicate inbound to a resource by assigning a public IP address or a public Load Balancer.
+5. You can also use Public IP addresses or public Load Balancer to manage your outbound connections.
+6. Communicate with on-premises networks: You can connect your on-premises computers and networks to a virtual network using VPN Gateway or ExpressRoute.
+7. Encrypt traffic between resources: You can use Virtual network encryption to encrypt traffic between resources in a virtual network.
+8. Network security groups : You can filter network traffic to and from Azure resources in an Azure virtual network with a network security group. 
+9. Service endpoints : Virtual Network (VNet) service endpoints extend your virtual network private address space and the identity of your virtual network to the Azure services, over a direct connection.
+10. Endpoints allow you to secure your critical Azure service resources to only your virtual networks. Traffic from your virtual network to the Azure service always remains on the Microsoft Azure backbone network
+#### VNet
+  Azure Virtual Network provides the fundamental building block for your private network in Azure. This service enables Azure resources like virtual machines (VMs) to securely communicate with each other, the internet, and on-premises networks. Virtual networks deliver the scale, availability, and *isolation benefits of Azure infrastructure*  while maintaining the familiar networking concepts you use in traditional datacenters.
+
+  ![alt text](image.png)
+
+#### Network security groups
+#### Serice endpoints 
+#### Azure private link
+#### Azure DNS
+#### Azure Bastion
+#### Azure route server
+#### NAT Gateway 
+#### Trafic Manager 
+
   ## Load Balancing && Content Delivery
    ###  Services allow for management, distribution, and optimization of your applications and workloads
    1. Load Balancer 
